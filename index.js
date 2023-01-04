@@ -19,15 +19,28 @@ const menu = [
 ]
 
 const addEmployee = [
-    { type: "input", message: "What is the name?", name: "first_name"},
+    { type: "input", message: "What is the name of the new employee?", name: "first_name" },
+    { type: "input", message: "What is the last name of the new employee?", name: "last_name" },
+    { type: "input", message: "What is the role id of the new employee?", name: "role_id" },
+    { type: "input", message: "What is the manager id of the new employee?", name: "manager_id" },
+
+
 ]
 
-// const questions = [
-//     { type: "input", message: "please enter managers name", name: "manager" },
-//     { type: "input", message: "please enter employee id", name: "id" },
-//     { type: "input", message: "please enter email address", name: "email" },
-//     { type: "input", message: "please enter the office number", name: "number" },
-// ];
+const addRole = [
+    { type: "input", message: "What is the title of the new role?", name: "new_role" },
+    { type: "input", message: "What is the salary of the new role?", name: "new_salary" },
+    { type: "input", message: "What is the department of the new role?", name: "new_role_department" },
+]
+
+const addDepartment = [
+    { type: "input", message: "What is the name of the new department?", name: "new_department" },
+]
+
+const updateEmployee = [
+    { type: "input", message: "Please select which employee to update", name: "update_employee" },
+]
+
 
 
 function init() {
@@ -39,35 +52,32 @@ function init() {
                 connection.query(
                     'SELECT * FROM department',
                     function (err, results) {
-                        console.table(results); // results contains rows returned by server                          
+                        console.table(results);
+                        init() // results contains rows returned by server                          
                     }
                 );
-
-
             }
+
+
+
             if (response.menu === "Add Employee") {
                 inquirer
                     .prompt(addEmployee)
                     .then((response) => {
 
                         connection.query(
-                            'INSERT INTO department (name) VALUES (?)',[response.first_name],
+                            'INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES (?,?,?,?)', [response.first_name, response.last_name, response.role_id, response.manager_id],
                             function (err, results) {
-                                console.table(results); // results contains rows returned by server                          
-                            }
-        
-                        )
+                                console.log(err)
+                                console.table(results); // results contains rows returned by server       
 
+                                init()
+                            })
                     })
-
-                
             }
 
 
-
-
-
-})
+        })
 }
 
 init();

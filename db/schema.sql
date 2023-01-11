@@ -33,8 +33,8 @@ VALUES ('engineering'),
 INSERT INTO role (title, salary, department_id)
 VALUES ('sales lead','80000',1),
 ('accountant','70000',2),
-('lawyer','100000',3),
+('lawyer','100000',3);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ('Jhon','Smith',1,null),
-('David','Rodriguez',1,1),
+('David','Rodriguez',1,1);

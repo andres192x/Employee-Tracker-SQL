@@ -28,9 +28,9 @@ const addEmployee = [
 ]
 
 const addRole = [
-    { type: "input", message: "What is the title of the new role?", name: "new_role" },
-    { type: "input", message: "What is the salary of the new role?", name: "new_salary" },
-    { type: "input", message: "What is the department of the new role?", name: "new_role_department" },
+    { type: "input", message: "What is the title of the new role?", name: "title" },
+    { type: "input", message: "What is the salary of the new role?", name: "salary" },
+    { type: "input", message: "What is the department of the new role?", name: "department_id" },
 ]
 
 const addDepartment = [
@@ -39,6 +39,7 @@ const addDepartment = [
 
 const updateEmployee = [
     { type: "input", message: "Please select which employee to update", name: "update_employee" },
+    { type: "input", message: "Please select the role id", name: "update_roleid" },
 ]
 
 
@@ -50,8 +51,10 @@ function init() {
             console.log(response)
             if (response.menu === "View All Employees") {
                 connection.query(
-                    'SELECT * FROM department',
+                    'SELECT * FROM employee',
                     function (err, results) {
+                        if (err) throw err;
+                        console.log("Viewing all Employees ");
                         console.table(results);
                         init() // results contains rows returned by server                          
                     }
@@ -68,13 +71,96 @@ function init() {
                         connection.query(
                             'INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES (?,?,?,?)', [response.first_name, response.last_name, response.role_id, response.manager_id],
                             function (err, results) {
-                                console.log(err)
+                                if (err) throw err;
+                                // console.log(err);
                                 console.table(results); // results contains rows returned by server       
 
                                 init()
                             })
                     })
             }
+
+            if (response.menu === "Update Employee Role") {
+                inquirer
+                    .prompt(updateEmployee)
+                    .then((response) => {
+
+                        connection.query(
+                            'UPDATE employee SET role_id=? WHERE id=?',[response.update_roleid,response.update_employee],
+                            function (err, results) {
+                                if (err) throw err;
+                                // console.log(err);
+                                console.table(results); // results contains rows returned by server       
+
+                                init()
+                            })
+                    })
+            }
+
+            if (response.menu === "View All Roles") {
+                
+                        connection.query(
+                            'SELECT * FROM role',
+                            function (err, results) {
+                                if (err) throw err;
+                                console.log("Viewing all Roles ");
+                                console.table(results);
+                                init() // results contains rows returned by server                          
+                            }
+                        );
+                    }
+
+                   
+            if (response.menu === "Add Roles") {
+                inquirer
+                    .prompt(addRole)
+                    .then((response) => {
+                        
+
+                        connection.query(
+                            'INSERT INTO role (title,salary,department_id) VALUES (?,?,?)', [response.title, response.salary, response.department_id],
+                            function (err, results) {
+                                if (err) throw err;
+                                // console.log(err);
+                                console.table(results); // results contains rows returned by server       
+
+                                init()
+                            })
+                    })
+            }
+
+            if (response.menu === "View All Departments") {
+                
+                connection.query(
+                    'SELECT * FROM department',
+                    function (err, results) {
+                        if (err) throw err;
+                        console.log("Viewing all Departments ");
+                        console.table(results);
+                        init() // results contains rows returned by server                          
+                    }
+                );
+            }
+
+            if (response.menu === "Add Department") {
+                inquirer
+                    .prompt(addDepartment)
+                    .then((response) => {
+                        
+
+                        connection.query(
+                            'INSERT INTO department (name) VALUES (?)', [response.new_department],
+                            function (err, results) {
+                                if (err) throw err;
+                                // console.log(err);
+                                console.table(results); // results contains rows returned by server       
+
+                                init()
+                            })
+                    })
+            }
+
+
 
 
         })
